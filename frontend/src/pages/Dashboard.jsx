@@ -7,7 +7,7 @@ export const Dashboard = () =>{
     
     return <div>
         <Appbar />
-        <div className="">
+        <div className="flex flex-col">
             <Balance value={"10,000"} />
             <Users />
         </div>

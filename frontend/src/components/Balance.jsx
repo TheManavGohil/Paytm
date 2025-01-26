@@ -2,7 +2,7 @@
 
 export const Balance = ( { value } ) =>{
 
-    return <div className="flex px-4">
+    return <div className="flex px-4 mt-2">
         <div className="font-bold text-lg">
             Your Balance :
         </div>

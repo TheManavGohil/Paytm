@@ -2,7 +2,8 @@ const { JWT_SECRET } = require("./config")
 const jwt = require('jsonwebtoken')
 
 const authMiddleware = (req, res, next) => {
-    const authHeader = req.header.authorization
+    const authHeader = req.headers.authorization
+    console.log("Authorization Header: ", req.headers.authorization)
 
     if(!authHeader || !authHeader.startsWith('Bearer ')){
         res.status(403).json({
@@ -11,6 +12,7 @@ const authMiddleware = (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1]
+    console.log(token)
 
     try{
         const decoded = jwt.verify(token, JWT_SECRET)

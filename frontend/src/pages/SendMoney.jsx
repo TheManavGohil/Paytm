@@ -8,7 +8,8 @@ export const SendMoney = () =>{
     const[searchParams] = useSearchParams()
     const id = searchParams.get("id")
     const name = searchParams.get("name")
-    const [amount, setAmount] = useState
+    const [amount, setAmount] = useState(0)
+
 
     return <div className="flex justify-center h-screen bg-gray-800">
         <div className="h-full flex flex-col justify-center">
@@ -19,29 +20,43 @@ export const SendMoney = () =>{
                 <div className="p-6">
                     <div className="flex item-center space-x-4">
                         <div className="rounded-full h-10 w-10 bg-green-500 flex item-center justify-center">
-                            <span className="text-2xl text-white ">A</span>
+                            <span className="text-2xl text-white ">
+                                {name[0].toUpperCase()}
+                            </span>
                         </div>
-                        <h3 className="text-2xl font-semibold">Friend's Name</h3>
+                        <h3 className="text-2xl font-semibold">{name}</h3>
                     </div>
                     <div className="space-y-4">
                         <div className="space-y-2">
                             <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Amount (in Rs)</label>
-                            <input onChange={(e) =>{
-                                setAmount(e.target.value)
+                            <input 
+                            type="number" 
+                            min="1"
+                            placeholder="Enter amount"
+                            value={amount}
+                            onChange={(e) =>{
+                                const value = parseInt(e.target.value)
+                                if(!isNaN(value) && value>0){
+                                    setAmount(value)
+                                }
                             }}
-                            type="number" placeholder="Enter amount" className="border rounded-md h-10 w-full text-sm bg-background px-3"></input>
+                            className="border rounded-md h-10 w-full text-sm bg-background px-3"></input>
                         </div>
                     </div>
                     <div className="space-y-4 mt-2">
-                        <button onClick={() =>{
-                            axios.post("http://localhost:5000/api/v1/account/transfer",{
-                                to: id,
-                                amount
-                            },{
-                                headers:{
-                                    Authorization: "Bearer " + localStorage.getItem("token")
-                                }
-                            })
+                        <button async onClick={async () =>{
+                            const token = localStorage.getItem("token") // Get token from localStorage
+                            console.log("Sending Request: ", { id, amount, token })
+                                await axios.post("http://localhost:5000/api/v1/account/transfer",{
+                                    to: id,
+                                    amount: parseInt(amount)
+                                },{
+                                    headers:{
+                                        Authorization: "Bearer " + localStorage.getItem("token")
+                                    }
+                                })
+                                alert("Transfer successfull!")
+                            
                         }}
                         className="bg-green-500 border rounded-md transition-colors w-full h-10 text-sm text-white text-md font-medium ring-offset-background flex justify-center py-2">
                         Initiate Transfer</button>

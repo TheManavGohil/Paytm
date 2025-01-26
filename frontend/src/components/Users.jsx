@@ -40,9 +40,9 @@ function User({user}){
 
     return<div className="flex justify-center">
         <div className="flex">
-            <div className="rounded-full h-12 w-12 text-white bg-slate-200 flex justify-center mt-1 mr-2">
+            <div className="rounded-full h-12 w-12 text-white bg-slate-700 flex justify-center mt-1 mr-2">
                 <div className="flex flex-col justify-center h-full">
-                    {user.firstName[0]}
+                    {user.firstName[0]}{user.lastName[0]}
                 </div>
             </div>
             <div className="flex flex-col justify-center h-full">
@@ -50,7 +50,7 @@ function User({user}){
             </div>
         </div>
         <div className="flex flex-col justify-center h-full">
-            <Button onClick={(e)=>{
+            <Button onClick={() =>{
                navigate("/send?id=" + user._id + "&name=" + user.firstName) 
             }} label="Send Money"/>
         </div>
