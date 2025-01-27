@@ -8,7 +8,7 @@ export const SendMoney = () =>{
     const[searchParams] = useSearchParams()
     const id = searchParams.get("id")
     const name = searchParams.get("name")
-    const [amount, setAmount] = useState
+    const [amount, setAmount] = useState()
 
     return <div className="flex justify-center h-screen bg-gray-800">
         <div className="h-full flex flex-col justify-center">
