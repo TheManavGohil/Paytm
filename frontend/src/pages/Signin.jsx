@@ -33,12 +33,10 @@ export const Signin = () =>{
                                 const response = await axios.post("http://localhost:5000/api/v1/user/signin",{
                                     username,
                                     password
-                                },{
-                                    headers:{
-                                        Authorization: "Bearer " + localStorage.getItem("token")
-                                    }
                                 })
                                 
+                                localStorage.setItem("token", response.data.token)
+
                                 navigate("/dashboard")
                             }catch(err){
                                 alert("Invalid credentials!")

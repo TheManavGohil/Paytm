@@ -5,16 +5,7 @@ const { default: mongoose } = require('mongoose')
 
 const router = express.Router()
 
-//balance
-router.get('/balance', authMiddleware, async (req, res) => {
-    const account = await Account.findOne({
-        userId: req.userId
-    })
 
-    res.json({
-        balance: account.balance
-    })
-})
 
 //transfer(bad sol)
 // router.post('/transfer', authMiddleware, async (req,res) => {
@@ -73,6 +64,7 @@ router.post('/transfer', authMiddleware, async(req, res) => {
             return res.status(400).json({
                 message: "Insufficient Balance"
             })
+            return;
         }
     
         const toAccount = await Account.findOne({userId:to}).session(session)
@@ -81,6 +73,7 @@ router.post('/transfer', authMiddleware, async(req, res) => {
             res.status(400).json({
                 message:"Invalid account"
             })
+            return;
         }
     
         await Account.updateOne(
@@ -108,6 +101,20 @@ router.post('/transfer', authMiddleware, async(req, res) => {
         session.endSession()
     }
 })
+
+router.get("/balance", authMiddleware, async (req, res) => {
+    try {
+        const account = await Account.findOne({ userId: req.userId });
+        if (!account) {
+            return res.status(404).json({ message: "Account not found" });
+        }
+
+        res.json({ balance: account.balance });
+    } catch (error) {
+        console.error("Error fetching balance:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
 
 
 module.exports = router

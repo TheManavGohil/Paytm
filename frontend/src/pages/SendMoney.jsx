@@ -1,20 +1,27 @@
 import axios from "axios"
 import { useState } from "react"
-import { useSearchParams } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 
 
 export const SendMoney = () =>{
 
     const[searchParams] = useSearchParams()
+    const navigate = useNavigate()
     const id = searchParams.get("id")
     const name = searchParams.get("name")
     const [amount, setAmount] = useState(0)
+    const [balance, setBalance] = useState(0)
 
-
-    return <div className="flex justify-center h-screen bg-gray-800">
+    return <div className="flex justify-center h-screen bg-gray-800 relative">
+        <button
+           className="absolute top-4 left-4 text-white bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md font-semibold"
+           onClick={() => navigate('/dashboard')}
+        >
+            ← Back  
+        </button>
         <div className="h-full flex flex-col justify-center">
-            <div className="h-min max-w-md w-96 bg-white border rounded-lg shadow-lg p-4 space-y-8">
-                <div className="flex flex-col space-y-1.5 p-6">
+                <div className="h-min max-w-md w-96 bg-white border rounded-lg shadow-lg p-4 space-y-8">
+                    <div className="flex flex-col space-y-1.5 p-6">
                     <h2 className="text-3xl font-bold text-center">Send Money</h2>
                 </div>
                 <div className="p-6">
@@ -35,34 +42,49 @@ export const SendMoney = () =>{
                             placeholder="Enter amount"
                             value={amount}
                             onChange={(e) =>{
-                                const value = parseInt(e.target.value)
-                                if(!isNaN(value) && value>0){
-                                    setAmount(value)
-                                }
+                                const value = e.target.value;
+                                if (value === "" || (!isNaN(value) && parseInt(value) > 0)) {
+                                    setAmount(value); 
+                                }                            
                             }}
                             className="border rounded-md h-10 w-full text-sm bg-background px-3"></input>
                         </div>
                     </div>
                     <div className="space-y-4 mt-2">
-                        <button async onClick={async () =>{
-                            const token = localStorage.getItem("token") // Get token from localStorage
-                            console.log("Sending Request: ", { id, amount, token })
-                                await axios.post("http://localhost:5000/api/v1/account/transfer",{
-                                    to: id,
-                                    amount: parseInt(amount)
-                                },{
-                                    headers:{
-                                        Authorization: "Bearer " + localStorage.getItem("token")
-                                    }
-                                })
-                                alert("Transfer successfull!")
-                            
-                        }}
+                    <button onClick={async () => {
+                        try {
+                            const token = localStorage.getItem("token");
+
+                            console.log("Sending Request: ", { id, amount, token });
+
+                            const response = await axios.post("http://localhost:5000/api/v1/account/transfer", {
+                                to: id,
+                                amount: parseInt(amount)
+                            }, {
+                                headers: {
+                                    Authorization: "Bearer " + token
+                                }
+                            });
+
+                            alert("Transfer successful!");
+
+                            const response1= await axios.get("http://localhost:5000/api/v1/account/balance", {
+                                headers: {
+                                    Authorization: "Bearer " + token
+                                }
+                            });
+                    
+                            setBalance(response1.data.balance)
+                        } catch (err) {
+                            console.error("Transfer Failed:", err); // Logs error details
+                            alert(err.response?.data?.message || "Transfer failed. Please try again.");
+                        }
+                    }}
                         className="bg-green-500 border rounded-md transition-colors w-full h-10 text-sm text-white text-md font-medium ring-offset-background flex justify-center py-2">
                         Initiate Transfer</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </div>  
     </div>
 }

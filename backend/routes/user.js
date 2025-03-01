@@ -4,7 +4,7 @@
     const { Account } = require('../db')
     const zod = require('zod')
     const jwt = require('jsonwebtoken')
-    const router = express.Router()
+    const   router = express.Router()
     const { authMiddleware } = require('../middleware')
 
 
@@ -17,7 +17,6 @@
         firstName: zod.string(),
         lastName: zod.string()
     })
-
     router.post("/signup", async (req,res) => {
         
         // zod validation
@@ -70,7 +69,6 @@
         username: zod.string().email(),
         password: zod.string()
     })
-
     router.post("/signin", async (req, res) => {
         const { success } = signinSchema.safeParse(req.body)
         if (!success) {

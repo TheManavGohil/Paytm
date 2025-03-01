@@ -4,7 +4,7 @@ mongoose.connect('mongodb+srv://manav25gohil:NBOFnjuXZ8XWPVHw@cluster0.7du3n.mon
     .then(() => console.log("connected to mongoDB"))
     .catch((err) => console.error('Mongodb connection error: ', err))
 
-    const userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     username: String,
     password: String,
     firstName: String,
